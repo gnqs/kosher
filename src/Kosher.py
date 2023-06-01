@@ -14,13 +14,13 @@ white = (255, 255, 255)
 green = (0, 128, 0)
 
 # 加载图片并调整大小
-player = pygame.image.load("../data/player.jpg")
+player = pygame.image.load("./data/player.jpg")
 player = pygame.transform.scale(player, (50, 50))
-box = pygame.image.load("../data/box.jpg")
+box = pygame.image.load("./data/box.jpg")
 box = pygame.transform.scale(box, (50, 50))
-target = pygame.image.load("../data/target.jfif")
+target = pygame.image.load("./data/target.jfif")
 target = pygame.transform.scale(target, (50, 50))
-ground = pygame.image.load("../data/ground.jfif")
+ground = pygame.image.load("./data/ground.jfif")
 ground = pygame.transform.scale(ground, (50, 50))
 
 # 定义类，包括地图，角色，箱子和目标
