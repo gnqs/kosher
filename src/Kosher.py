@@ -156,28 +156,63 @@ class Map:
 class Player:
     def __init__(self, pos):
         self.pos = pos
+    
 
 class Box:
     def __init__(self, pos):
         self.pos = pos
 
 class Food( Box ):
-    def __init__(self, pos):
+    def __init__(self, pos, food_id):
         super().__init__(pos)
+        self.food_id = food_id
 
 class Game:
-    def __init__(self, map, player, box, food):
+    def __init__(self, map, player, food, target):
         self.map = map
         self.player = player
-        self.box = box
-        self.food = food
+        self.food = food 
+        self.target = target
+
+#目标必须是食材按一定顺序推入才可以
+class Target:
+    def __init__(self, pos, food_ids:list):
+        """
+        pos: 目标位置 (x, y)
+        food_ids: 目标食材id列表 [id1, id2, id3, ...]
+        """
+        self.pos = pos
+        self.food_ids = food_ids
+        self.food_num = 0
+
+    def check(self, food_id):
+        """检查食材是否是目标顺序中的下一个"""
+        if food_id == self.food_ids[self.food_num]:
+            return True
+        else:
+            return False
+    
+    def put_in_food(self, food_id):
+        """将食材推入目标，必须首先检查食材是否是目标顺序中的下一个check()"""
+        if self.check(food_id):
+            self.food_num += 1
+        else:
+            assert False, "Wrong food id put in!"
+    
+    def is_finish(self):
+        """检查食材是否全部放入目标"""
+        if self.food_num == len(self.food_ids):
+            return True
+        else:
+            return False
+
 
 # 创建地图
 map_data = [
     [1, 1, 1, 1, 1, 1, 1, 1],
     [1, 2, 1, 3, 1, 1, 1, 1],
     [1, 1, 1, 1, 3, 1, 1, 1],
-    [1, 1, 4, 3, 2, 3, 1, 1],
+    [1, 1, 4, 3, 1, 3, 1, 1],
     [1, 1, 1, 1, 3, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 1, 1]
 ]
