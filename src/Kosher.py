@@ -32,22 +32,54 @@ state = START_MENU
 
 # 屏幕大小
 size = width, height = 500, 600
+# 瓦片大小
+tile_size = 50
 # 颜色定义
 red = (255, 0, 0)
 black = (0, 0, 0)
 white = (255, 255, 255)
 green = (0, 128, 0)
-dark_blue = (0, 0, 128)
+mid_green = (70, 100, 91)
+dark_green = (34, 64, 57)
+dark_blue = (72, 61, 139)
+yellow = (255, 215, 0)
+grey = (155, 158, 155)
 
-BUTTON_COLOR = dark_blue
+BUTTON_COLOR = dark_green
 
 font_path = "./data/font.ttf"
 # 初始化Pygame和屏幕
 pygame.init()
+pygame.mixer.init()
+
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Kosher")
 
+# 加载音乐
+bgm_sound = pygame.mixer.Sound("./sound/menuBGM.wav")
+bgm_sound.set_volume(0.2)
+bgm_sound.play(-1)
+
+# 加载音效
+move_sound = pygame.mixer.Sound("./sound/move.wav")
+cook_sound = pygame.mixer.Sound("./sound/cook.wav")
+tp_sound = pygame.mixer.Sound("./sound/tp.wav")
+tp_sound.set_volume(0.5)
+drop_sound = pygame.mixer.Sound("./sound/drop.wav")
+
 # 加载图片并调整大小
+kosher_1 = pygame.image.load("./data/kosher_1.png")
+kosher_1_image = pygame.transform.scale(kosher_1, (300, 100))
+
+kosher_2 = pygame.image.load("./data/kosher_2.png")
+kosher_2_image = pygame.transform.scale(kosher_2, (300, 100))
+
+kosher_3 = pygame.image.load("./data/kosher_3.png")
+kosher_3_image = pygame.transform.scale(kosher_3, (300, 100))
+
+kosher_4 = pygame.image.load("./data/kosher_4.png")
+kosher_4_image = pygame.transform.scale(kosher_4, (300, 100))
+
 button_image = pygame.image.load("./data/button.png")
 button_image = pygame.transform.scale(button_image, (100, 50))
 
@@ -92,6 +124,36 @@ target_image = pygame.transform.scale(target, (50, 50))
 
 ground = pygame.image.load("./data/ground.png")
 ground_image = pygame.transform.scale(ground, (50, 50))
+
+grass = pygame.image.load("./data/grass.png")
+grass_image = pygame.transform.scale(grass, (50, 50))
+
+grass_l = pygame.image.load("./data/grass_l.png")
+grass_l_image = pygame.transform.scale(grass_l, (50, 50))
+
+grass_r = pygame.image.load("./data/grass_r.png")
+grass_r_image = pygame.transform.scale(grass_r, (50, 50))
+
+grass_u = pygame.image.load("./data/grass_u.png")
+grass_u_image = pygame.transform.scale(grass_u, (50, 50))
+
+grass_d = pygame.image.load("./data/grass_d.png")
+grass_d_image = pygame.transform.scale(grass_d, (50, 50))
+
+grass_1 = pygame.image.load("./data/grass_1.png")
+grass_1_image = pygame.transform.scale(grass_1, (50, 50))
+
+grass_2 = pygame.image.load("./data/grass_2.png")
+grass_2_image = pygame.transform.scale(grass_2, (50, 50))
+
+grass_3 = pygame.image.load("./data/grass_3.png")
+grass_3_image = pygame.transform.scale(grass_3, (50, 50))
+
+grass_4 = pygame.image.load("./data/grass_4.png")
+grass_4_image = pygame.transform.scale(grass_4, (50, 50))
+
+grass_33 = pygame.image.load("./data/grass_33.png")
+grass_33_image = pygame.transform.scale(grass_33, (50, 50))
 
 tp = pygame.image.load("./data/tp.png")
 tp_image = pygame.transform.scale(tp, (50, 50))
@@ -238,22 +300,50 @@ class StartMenu:
     def __init__(self):
         self.buttons = []
         
-        self.start_button = Button( 200, 100, 100, 50, red, "开始游戏", BUTTON_COLOR, 25, to_start_game, button_image)
+        self.start_button = Button( 200, 200, 100, 50, red, "开始游戏", BUTTON_COLOR, 20, to_start_game, button_image)
         self.buttons.append(self.start_button)
         
-        self.help_button = Button( 200, 200, 100, 50, red, "帮助", BUTTON_COLOR, 25, to_help_menu, button_image)
+        self.help_button = Button( 200, 300, 100, 50, red, "帮助", BUTTON_COLOR, 20, to_help_menu, button_image)
         self.buttons.append(self.help_button)
 
-        self.level_select_button = Button( 200, 300, 100, 50, red, "选择关卡", BUTTON_COLOR, 25, to_level_select_menu, button_image)
+        self.level_select_button = Button( 200, 400, 100, 50, red, "选择关卡", BUTTON_COLOR, 20, to_level_select_menu, button_image)
         self.buttons.append(self.level_select_button)
         
-        self.exit_button = Button( 200, 400, 100, 50, red, "退出游戏", BUTTON_COLOR, 25, exit_game, button_image)
+        self.exit_button = Button( 200, 500, 100, 50, red, "退出游戏", BUTTON_COLOR, 20, exit_game, button_image)
         self.buttons.append(self.exit_button)
 
     def draw(self):
+        for row in range(0, height, tile_size):
+            for clm in range(0, width, tile_size):
+                if clm >= 150 and clm <= 300 and row >= 150 and row <= 600:
+                    if row == 550 and clm >= 200 and clm <= 250:
+                        screen.blit(grass_u_image, (clm, row))
+                    elif row == 150 and clm >= 200 and clm <= 250:
+                        screen.blit(grass_d_image, (clm, row))
+                    elif row >= 200 and row <= 500 and clm == 150:
+                        screen.blit(grass_r_image, (clm, row))
+                    elif row >= 200 and row <= 500 and clm == 300:
+                        screen.blit(grass_l_image, (clm, row))
+                    elif row == 150 and clm == 300:
+                        screen.blit(grass_3_image, (clm, row))
+                    elif row == 550 and clm == 150:
+                        screen.blit(grass_2_image, (clm, row))
+                    elif row == 150 and clm == 150:
+                        screen.blit(grass_4_image, (clm, row))
+                    elif row == 550 and clm == 300:
+                        screen.blit(grass_1_image, (clm, row))
+                    else:
+                        screen.blit(ground_image, (clm, row))
+                elif (row == 250 and clm == 350) or (row == 450 and clm == 100):
+                    screen.blit(grass_33_image, (clm, row))
+                else:
+                    screen.blit(grass_image, (clm, row))
+        
+        screen.blit(kosher_4_image, (100, 50))
+
         for button in self.buttons:
             button.draw(screen)
-    
+            
     def update(self, event):
         for button in self.buttons:
             button.is_clicked(event)
@@ -261,17 +351,38 @@ class StartMenu:
 class HelpMenu:
     def __init__(self):
         self.buttons = []
-        self.help_text = "请按提示信息按顺序将食物放入锅中\n做成美味的食物吧!!!\n注意:\n1.一定要注意放入食材顺序\n2.传送阵只能传送自己哦\n3.也可以经过锅哦"
+        self.help_text = "请按提示信息按顺序将食物放入锅中\n做成美味的食物吧。\n注意:\n1.一定要注意放入食材顺序\n2.传送阵只能传送自己哦\n3.也可以经过锅哦"
         
-        self.back_button = Button(150, 400, 100, 50, red, "返回", BUTTON_COLOR, 25, to_start_menu, button_image)
+        self.back_button = Button(200, 400, 100, 50, red, "返回", BUTTON_COLOR, 20, to_start_menu, button_image)
         self.buttons.append(self.back_button)
 
     def draw(self):
+        for row in range(0, height, tile_size):
+            for clm in range(0, width, tile_size):
+                if row == 350 and clm >= 200 and clm <= 250:
+                    screen.blit(grass_d_image, (clm, row))
+                elif row == 450 and clm >= 200 and clm <= 250:
+                    screen.blit(grass_u_image, (clm, row))
+                elif row == 400 and clm == 300:
+                    screen.blit(grass_l_image, (clm, row))
+                elif row == 400 and clm == 150:
+                    screen.blit(grass_r_image, (clm, row))
+                elif row == 350 and clm == 150:
+                    screen.blit(grass_4_image, (clm, row))
+                elif row == 350 and clm == 300:
+                    screen.blit(grass_3_image, (clm, row))
+                elif row == 450 and clm == 150:
+                    screen.blit(grass_2_image, (clm, row))
+                elif row == 450 and clm == 300:
+                    screen.blit(grass_1_image, (clm, row))
+                else:
+                    screen.blit(grass_image, (clm, row))
+
         # 绘制帮助信息文本
         lines = self.help_text.split("\n")
         for i, line in enumerate(lines):
             text_surface = pygame.font.Font(font_path, 20).render(line, True, white)
-            screen.blit(text_surface, (100, 200 + i * 30))
+            screen.blit(text_surface, (100, 150 + i * 30))
         
         # 绘制按钮
         for button in self.buttons:
@@ -286,22 +397,47 @@ class GameSelectMenu:
         self.buttons = []
 
         # 添加关卡选择按钮
-        self.level1_button = Button(150, 200, 100, 50, red, "Level 1", BUTTON_COLOR, 25, to_start_level_1, button_image)
+        self.level1_button = Button(150, 200, 100, 50, red, "Level1", BUTTON_COLOR, 20, to_start_level_1, button_image)
         self.buttons.append(self.level1_button)
 
-        self.level2_button = Button(150, 300, 100, 50, red, "Level 2", BUTTON_COLOR, 25, to_start_level_2, button_unlock_image)
+        self.level2_button = Button(150, 300, 100, 50, red, "Level2", BUTTON_COLOR, 20, to_start_level_2, button_unlock_image)
         self.buttons.append(self.level2_button)
 
-        self.level3_button = Button(250, 200, 100, 50, red, "Level 3", BUTTON_COLOR, 25, to_start_level_3, button_unlock_image)
+        self.level3_button = Button(250, 200, 100, 50, red, "Level3", BUTTON_COLOR, 20, to_start_level_3, button_unlock_image)
         self.buttons.append(self.level3_button)
 
-        self.level4_button = Button(250, 300, 100, 50, red, "Level 4", BUTTON_COLOR, 25, to_start_level_4, button_unlock_image)
+        self.level4_button = Button(250, 300, 100, 50, red, "Level4", BUTTON_COLOR, 20, to_start_level_4, button_unlock_image)
         self.buttons.append(self.level4_button)
 
-        self.back_button = Button(150, 400, 100, 50, red, "返回", BUTTON_COLOR, 25, to_start_menu, button_image)
+        self.back_button = Button(150, 400, 100, 50, red, "返回", BUTTON_COLOR, 20, to_start_menu, button_image)
         self.buttons.append(self.back_button)
 
     def draw(self):
+        #draw background
+        for row in range(0, height, tile_size):
+            for clm in range(0, width, tile_size):
+                if clm >= 100 and clm <= 350 and row >= 150 and row <= 450:
+                    if row == 450 and clm >= 150 and clm <= 300:
+                        screen.blit(grass_u_image, (clm, row))
+                    elif row == 150 and clm >= 150 and clm <= 300:
+                        screen.blit(grass_d_image, (clm, row))
+                    elif row >= 200 and row <= 400 and clm == 100:
+                        screen.blit(grass_r_image, (clm, row))
+                    elif row >= 200 and row <= 400 and clm == 350:
+                        screen.blit(grass_l_image, (clm, row))
+                    elif row == 150 and clm == 350:
+                        screen.blit(grass_3_image, (clm, row))
+                    elif row == 450 and clm == 100:
+                        screen.blit(grass_2_image, (clm, row))
+                    elif row == 150 and clm == 100:
+                        screen.blit(grass_4_image, (clm, row))
+                    elif row == 450 and clm == 350:
+                        screen.blit(grass_1_image, (clm, row))
+                    else:
+                        screen.blit(ground_image, (clm, row))
+                else:
+                    screen.blit(grass_image, (clm, row))
+
         # 绘制按钮
         for index, button in enumerate(self.buttons):
             if index < unlock_level or index > 3:
@@ -318,48 +454,90 @@ class GameSelectMenu:
 class GameWinMenu:
     def __init__(self):
         self.buttons = []
-        self.win_title = "You win!"
+        self.win_title = "KOSHER COMPLETED!"
         self.image = None
         self.info = None
 
-        self.back_button = Button(125, 550, 100, 50, red, "返回", BUTTON_COLOR, 25, to_start_menu, button_image)
+        self.back_button = Button(125, 550, 100, 50, red, "返回", BUTTON_COLOR, 20, to_start_menu, button_image)
         self.buttons.append(self.back_button)
 
-        self.next_button = Button(275, 550, 100, 50, red, "下一关", BUTTON_COLOR, 25, to_next_level, button_image)
+        self.next_button = Button(275, 550, 100, 50, red, "下一关", BUTTON_COLOR, 20, to_next_level, button_image)
         self.buttons.append(self.next_button)
     
     def draw(self):
+        # draw background
+        for row in range(0, height, tile_size):
+            for clm in range(0, width, tile_size):
+                if row == 550:
+                    if (clm == 125 and row == 550) or (clm == 275 and row == 550):
+                        continue
+                    else:
+                        screen.blit(ground_image, (clm, row))
+                elif row == 500:
+                    if clm == 0 or clm == 350:
+                        screen.blit(grass_3_image, (clm, row))
+                    elif clm == 450 or clm == 50:
+                        screen.blit(grass_r_image, (clm, row))
+                    elif clm == 200 or clm == 250:
+                        screen.blit(ground_image, (clm, row))
+                    else:
+                        screen.blit(grass_d_image, (clm, row))
+                elif row == 450 and clm == 250:
+                    screen.blit(grass_3_image, (clm, row))
+                elif row == 450 and (clm == 150 or clm == 450):
+                    screen.blit(grass_33_image, (clm, row))
+                elif row == 300 and clm >= 100 and clm <= 350:
+                    screen.blit(grass_u_image, (clm, row))
+                elif row >= 50 and row <= 250 and clm == 50:
+                    screen.blit(grass_r_image, (clm, row))
+                elif row >= 50 and row <= 250 and clm == 400:
+                    screen.blit(grass_l_image, (clm, row))
+                elif row == 0 and clm >= 100 and clm <= 350:
+                    screen.blit(grass_d_image, (clm, row))
+                elif row == 0 and clm == 50:
+                    screen.blit(grass_4_image, (clm, row))
+                elif row == 0 and clm == 400:
+                    screen.blit(grass_3_image, (clm, row))
+                elif row == 300 and clm == 50:
+                    screen.blit(grass_2_image, (clm, row))
+                elif row == 300 and clm == 400:
+                    screen.blit(grass_1_image, (clm, row))
+                else:
+                    screen.blit(grass_image, (clm, row))
+
         # 绘制帮助信息文本
         global game_level
         if game_level == 1:
-            self.win_title = "制作成功:鹰嘴豆泥！！！"
+            self.win_title = "制作成功:鹰嘴豆泥!!!"
             self.image = foo1
-            self.info = "<鹰嘴豆泥=鹰嘴豆+橄榄油>\n鹰嘴豆泥是以色列日常膳食的常见部分。它由遵循Kashrut的成分制成。\n19世纪末和20世纪初从欧洲抵达的犹太移民采用了大部分巴勒斯坦当地\n美食,包括鹰嘴豆泥,尽管传统上它是生活在阿拉伯语地区的Mizrahi犹\n太人美食的一部分。来自这些国家的许多Mizrahi犹太移民带来了他们自\n己独特的变种虽然有时被批评为犹太人对巴勒斯坦和阿拉伯文化的挪用,\n鹰嘴豆泥已被采纳为以色列的非官方“国菜”,反映了它在整个以色列\n人口中的巨大受欢迎程度和重要性\n"
+            self.info = "<鹰嘴豆泥=鹰嘴豆+橄榄油>\n鹰嘴豆泥是犹太人传统的一道食品,也是中东地区广受欢迎的美食之一。其\n主要原料为鹰嘴豆,配以橄榄油、柠檬汁、蒜泥、辣椒粉和芝麻酱等调料混合\n搅拌而成。据说吃鹰嘴豆泥可以提高智慧、促进学习和思考能力,因此在犹\n太教日常生活中,鹰嘴豆泥也被广泛食用。"
 
         elif game_level == 2:
-            self.win_title = "制作成功:薯饼!!!"
+            self.win_title = "制作成功:薯饼！！！"
             self.image = foo2
-            self.info = "<薯饼=面粉+土豆>\n庆祝光明节的传统食物多数是油炸的,象征着圣殿使用的烛台上的油,主\n要包括炸薯饼和甜甜圈。犹太人也喜欢在炸薯饼上面点缀各式美味,从甜品到\n香薄荷,从普通到特别的风味：自制苹果酱、奶油奶酪和烟熏三文鱼、以色列沙拉,\n甚至熏牛肉和芥末等等。"
+            self.info = "<薯饼=面粉+土豆>\n庆祝光明节的传统食物多数是油炸的,象征着圣殿使用的烛台上的油,主要\n包括炸薯饼和甜甜圈。犹太人也喜欢在炸薯饼上面点缀各式美味,从甜品到\n香薄荷,从普通到特别的风味:自制苹果酱、奶油奶酪和烟熏三文鱼、以色列\n沙拉,甚至熏牛肉和芥末等等。"
             
         elif game_level == 3:
             self.win_title = "制作成功:辫子面包！！！"
             self.image = foo3
-            self.info = "<辫子面包=面粉+鸡蛋+蜂蜜>\n在犹太历中,一周的开始是周日,从周五傍晚日落时开始的安息日一直延续\n到周六日落后一小时。安息日是犹太教每周一天的休息日。在希伯来圣经中创 \n世纪篇章里讲述上帝在创造世界后,在第七天休息。在这段时间内,按照犹\n太教的规定,不能使用明火、不能远行、不能从事劳动。周五晚上安息日开\n始前,遵守犹太宗教传统的家庭会在家点上蜡烛,并徒步去犹太会堂参加安\n息日的祈祷仪式。仪式结束后,每个家庭会进行一场安息日晚餐,在晚餐中\n要品尝两样食品:红葡萄酒和辫子面包。"
+            self.info = "<辫子面包=面粉+鸡蛋+蜂蜜>\n在犹太历中,一周的开始是周日,从周五傍晚日落时开始的安息日一直延续到\n周六日落后一小时。周五晚上安息日开始前,遵守犹太宗教传统的家庭会在\n家中点上蜡烛,并徒步去犹太会堂参加安息日的祈祷仪式。仪式结束后,每个\n家庭会进行一场安息日晚餐,在晚餐中要品尝两样食品:葡萄酒和辫子面包。"
 
         elif game_level == 4:
             self.win_title = "制作成功:无酵饼丸子汤！！！"
             self.image = foo4
-            self.info = "<无酵饼丸子汤=鸡肉+胡萝卜+芹菜+无酵饼>\n按照风俗,逾越节的前两天是要在欢宴中度过的,而家宴上最重要的食物,\n便是无酵饼了。当法老最终释放犹太人之后,他们迅速逃离了家,自然也\n没有时间像平时一样等面包发酵。没发酵的面包被撕成小块扔进篮子带走,\n炽热阳光将它们烤熟,最后成了一张张的饼干。也因此,犹太人认定发\n酵的食物是不洁的,在神圣的逾越节其间,只有无酵饼才是最适宜的食物。\n不知什么时代开始,有人发现无酵饼打碎了磨成粉之后,味道居然和生\n面粉差很大,之前烘焙的过程给了它一种独特的焦香。此去多年后年,有\n人发现,无酵饼捏成丸子后,做汤居然超级好喝。于是乎,这种无酵饼丸\n子汤正式登堂入室,成为一道经典西餐"
-           
+            self.info = "<无酵饼丸子汤=鸡肉+胡萝卜+芹菜+无酵饼>\n逾越节的前两天会在欢宴中度过的,而家宴上最重要的食物便是无酵饼了。\n当犹太人被法老释放后迅速逃离时,只能将没发酵的面包撕成小块带走,阳\n光将它们烤成了一张张的饼。因此发酵食物被认为是不洁的,在神圣的逾越\n节其间应该吃无酵饼。无酵饼捏成丸子做汤十分美味,使其成为一道经典。"
+          
         
         text_title = pygame.font.Font(font_path, 20).render(self.win_title, True, white)
         
         scroll_offset = 0
         scroll_speed = 20
-        font_size = 12
-        text_area = pygame.Surface((400, 300))
+        font_size = 15
+        text_area = pygame.Surface((400, 100))
+        text_area.fill(mid_green)
+        text_area.set_alpha(180)
         lines = self.info.split("\n")
-        line_height = font_size + 3
+        line_height = font_size + 5
         font = pygame.font.Font(font_path, font_size)
         for i, line in enumerate(lines):
             text_surface = font.render(line, True, white)
@@ -369,15 +547,16 @@ class GameWinMenu:
         screen.blit(self.image, (100, 50))
         screen.blit(text_area, (50, 350))
         
-        
         # 绘制按钮
         if game_level < 4:
             self.next_button.draw(screen)
         self.back_button.draw(screen)
+                   
         
     def update(self, event):
-        for button in self.buttons:
-            button.is_clicked(event)
+        self.back_button.is_clicked(event)
+        if(game_level < 4):
+            self.next_button.is_clicked(event)
         
 
 # 定义类，包括地图，角色，箱子和目标
@@ -422,6 +601,7 @@ class Player:
         screen.blit(player_image, (self.pos[1] * 50, self.pos[0] * 50))
    
     def move(self, direction):
+        move_sound.play( maxtime=300 )
         if direction == "up":
             self.pos[0] -= 1
         elif direction == "down":
@@ -522,12 +702,12 @@ class Game:
         
         if self.check_win():
             self.draw()
-            # pygame.display.update()   
-            text = pygame.font.Font(font_path, 50).render("You win!", True, green)
+            cook_sound.play( maxtime=2000 )
+            text = pygame.font.Font(font_path, 50).render("KOSHER COMPLETED!", True, yellow)
             text_rect = text.get_rect(center=(width/2, height/2))
             screen.blit(text, text_rect)
             pygame.display.update()
-            pygame.time.delay(1000)
+            pygame.time.delay(2500)
             global game_level
             global unlock_level
             if(unlock_level < game_level + 1):
@@ -611,6 +791,7 @@ class Target:
         """将食材推入目标，必须首先检查食材是否是目标顺序中的下一个check()"""
         if self.check(food_id):
             self.food_num += 1
+            drop_sound.play( maxtime=800 )
         else:
             assert False, "Wrong food id put in!"
     
@@ -637,6 +818,7 @@ class Teleportation ():
             return False
     
     def teleport(self, pos):
+        tp_sound.play( maxtime=500 )
         if pos == self.pos1:
             return self.pos2.copy()
         elif pos == self.pos2:
@@ -674,16 +856,13 @@ class Button:
                 self.click_handler(*args, **kwargs)  # 调用点击处理函数
 
 # 创建地图
-
-
-
 def init_game():
     global game
     if game_level == 1:
 
         map_data = [
-    [-5, -3, -3,-3, -3, -3, -3, -3, -3, -7],
-    [-2, 1, 1, 1, 1, 1, 1, 1, 1, -2],
+    [-5, -3, -3, -3, -3, -3, -3, -3, -3, -7],
+    [-2,  1,  1,  1,  1,  1,  1,  1,  1, -2],
     [-2, 1, 1, 1, 1, 1, 1, 1, 1, -2],
     [-2, 1, 1, -5, -3, -3, -3, -3, -3, -1],
     [-2, 1, 1, -2, 1, 1, 1, 1, 1, -2],
@@ -692,7 +871,7 @@ def init_game():
     [-2, 1, 1, 1, 1, 1, -2, 1, 1, -2],
     [-2, 1, 1, 1, 1, 1, -2, 1, 1, -2],
     [-4, -3 ,-3, -3, -3, -3, -1, -3, -3, -6],
-    [1, 1, 1, 1 ,1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1 ,1, 1, 1, 1, 1, 1]
     ]
         map = Map(map_data)
         player = Player([1, 8])
@@ -712,7 +891,7 @@ def init_game():
     [1, 1, -2, 1, 1, 1, 1, -2, 1, 1],
     [1, 1, -4, -3, -3, -3, -3, -6, 1, 1],
     [1, 1 ,1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1 ,1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1 ,1, 1, 1, 1, 1, 1]
     ]
         map = Map(map_data)
         player = Player([5, 8])
@@ -732,7 +911,7 @@ def init_game():
     [-2, 1, 1, 1 ,1, 1, 1, 1, 1, -2],
     [-2, 1, 1, 1 ,-2, 1, 1, 1, 1, -2],
     [-4, -3, -3 ,-3, -1, -3, -3, -3, -3, -6],
-    [1, 1, 1, 1 ,1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1 ,1, 1, 1, 1, 1, 1]
     ]
         map = Map(map_data)
         tp = Teleportation([3, 1], [3, 8])
@@ -797,4 +976,3 @@ while True:
     screen.fill(black)
     game_state.draw()
     pygame.display.update()
-   
